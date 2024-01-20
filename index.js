@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 
-const uri = "mongodb+srv://<username>:<password>@cluster0.nruv7rx.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://automotive-store:Md5IsZDCMq2lTB9y@cluster0.nruv7rx.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,6 +29,16 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const database = client.db("automotiveDB").collection("automotiveProducts")
+
+    app.post('/products',async(req,res) =>{
+        const user = req.body;
+        console.log('new user',user)
+        const result = await database.insertOne(automotiveProducts);
+        res.send(result);
+    })
+
 
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
