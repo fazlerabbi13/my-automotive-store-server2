@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express')
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,12 +33,16 @@ async function run() {
     const database = client.db("automotiveDB").collection("automotiveProducts")
 
     app.post('/products',async(req,res) =>{
-        const user = req.body;
-        console.log('new user',user)
-        const result = await database.insertOne(automotiveProducts);
+        const newProduct = req.body;
+        const result = await database.insertOne(newProduct);
         res.send(result);
     })
 
+    app.get('/products',async(req,res) =>{
+        const cursor = database.find();
+        const result =await cursor.toArray();
+        res.send(result);
+    })
 
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
