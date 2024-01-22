@@ -43,6 +43,11 @@ async function run() {
         const result =await cursor.toArray();
         res.send(result);
     })
+    app.get('/products/:brand',async(req,res) =>{
+      const cursor = database.find(req.params);
+      const result =await cursor.toArray();
+      res.send(result);
+    })
 
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
