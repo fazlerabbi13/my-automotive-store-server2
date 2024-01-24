@@ -48,6 +48,10 @@ async function run() {
       const result =await cursor.toArray();
       res.send(result);
     })
+    app.get('/productDetails/:name',async(req,res) =>{
+      const cursor =await database.findOne(req.params);
+      res.send(cursor);
+    })
 
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
