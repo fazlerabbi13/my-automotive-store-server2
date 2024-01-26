@@ -31,7 +31,8 @@ async function run() {
     await client.connect();
 
     const database = client.db("automotiveDB").collection("automotiveProducts")
-
+    const cartDatabase = client.db("automotiveCartDB").collection("automotiveCartProducts")
+    // add and get api
     app.post('/products',async(req,res) =>{
         const newProduct = req.body;
         const result = await database.insertOne(newProduct);
@@ -43,16 +44,31 @@ async function run() {
         const result =await cursor.toArray();
         res.send(result);
     })
+    //  brand products api
     app.get('/products/:brand',async(req,res) =>{
       const cursor = database.find(req.params);
       const result =await cursor.toArray();
       res.send(result);
     })
+    // cart section server
+
+    app.post('/carts', async(req,res) =>{
+      const newCart =req.body;
+      const result = await cartDatabase.insertOne(newCart);
+      res.send(result)
+    })
+
+    app.get('/carts', async(req,res) =>{
+      const cursor = cartDatabase.find();
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    // product details api
     app.get('/productDetails/:name',async(req,res) =>{
       const cursor =await database.findOne(req.params);
       res.send(cursor);
     })
-
+    // server testing api
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
     })
