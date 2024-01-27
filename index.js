@@ -33,55 +33,81 @@ async function run() {
     const database = client.db("automotiveDB").collection("automotiveProducts")
     const cartDatabase = client.db("automotiveCartDB").collection("automotiveCartProducts")
     // add and get api
-    app.post('/products',async(req,res) =>{
-        const newProduct = req.body;
-        const result = await database.insertOne(newProduct);
-        res.send(result);
+    app.post('/products', async (req, res) => {
+      const newProduct = req.body;
+      const result = await database.insertOne(newProduct);
+      res.send(result);
     })
 
-    app.get('/products',async(req,res) =>{
-        const cursor = database.find();
-        const result =await cursor.toArray();
-        res.send(result);
+    app.get('/products', async (req, res) => {
+      const cursor = database.find();
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //  brand products api
-    app.get('/products/:brand',async(req,res) =>{
+    app.get('/products/:brand', async (req, res) => {
       const cursor = database.find(req.params);
-      const result =await cursor.toArray();
+      const result = await cursor.toArray();
       res.send(result);
     })
     // cart section server
 
-    app.post('/carts', async(req,res) =>{
-      const newCart =req.body;
+    app.post('/carts', async (req, res) => {
+      const newCart = req.body;
       const result = await cartDatabase.insertOne(newCart);
       res.send(result)
     })
 
-    app.get('/carts', async(req,res) =>{
+    app.get('/carts', async (req, res) => {
       const cursor = cartDatabase.find();
       const result = await cursor.toArray()
       res.send(result)
     })
     // product details api
-    app.get('/productDetails/:name',async(req,res) =>{
-      const cursor =await database.findOne(req.params);
+    app.get('/productDetails/:name', async (req, res) => {
+      const cursor = await database.findOne(req.params);
       res.send(cursor);
     })
-    // delete cart product api
-    app.delete('/carts/:id', async(req,res) =>{
+    // update product api
+    app.get('/products/:id', async (req, res) => {
       const id = req.params.id;
-      const query ={_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id)};
+      const result = await database.findOne(query);
+      res.send(result);
+    })
+
+    app.put('/products/:id', async (req, res) => {
+      const id =req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updateProduct =req.body
+      const product = {
+        $set: {
+          image:updateProduct.image,
+          name:updateProduct.name,
+          brand:updateProduct.brand,
+          product:updateProduct.product,
+          price:updateProduct.price,
+          short:updateProduct.short
+        }
+      }
+      const result = await database.updateOne(filter,product,options)
+      res.send(result)
+    })
+    // delete cart product api
+    app.delete('/carts/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
       const result = await cartDatabase.deleteOne(query);
       res.send(result);
     })
     // server testing api
-    app.get('/',(req,res) =>{
-        res.send('simple crud is running')
+    app.get('/', (req, res) => {
+      res.send('simple crud is running')
     })
-    
-    app.listen(port,() =>{
-        console.log(`simple crud is running on port ${port}`)
+
+    app.listen(port, () => {
+      console.log(`simple crud is running on port ${port}`)
     })
 
 
