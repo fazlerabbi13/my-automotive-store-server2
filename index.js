@@ -68,6 +68,13 @@ async function run() {
       const cursor =await database.findOne(req.params);
       res.send(cursor);
     })
+    // delete cart product api
+    app.delete('/carts/:id', async(req,res) =>{
+      const id = req.params.id;
+      const query ={_id: new ObjectId(id)}
+      const result = await cartDatabase.deleteOne(query);
+      res.send(result);
+    })
     // server testing api
     app.get('/',(req,res) =>{
         res.send('simple crud is running')
