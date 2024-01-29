@@ -64,9 +64,12 @@ async function run() {
       res.send(result)
     })
     // product details api
-    app.get('/productDetails/:name', async (req, res) => {
-      const cursor = await database.findOne(req.params);
-      res.send(cursor);
+    app.get('/productDetails/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)};
+      const result = await database.findOne(query);
+      res.send(result);
+     
     })
     // update product api
     app.get('/products/:id', async (req, res) => {
