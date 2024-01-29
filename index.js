@@ -1,20 +1,27 @@
 const express = require('express')
 const cors = require('cors');
+require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-// automotive-store
-// Md5IsZDCMq2lTB9y
+
+
+
 
 // middlewere
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://automotive-160b6.web.app"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 
 
 
-const uri = "mongodb+srv://automotive-store:Md5IsZDCMq2lTB9y@cluster0.nruv7rx.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nruv7rx.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -122,6 +129,5 @@ async function run() {
     // Ensures that the client will close when you finish/error
     // await client.close();
   }
-}
-run().catch(console.dir);
-
+ }
+  run().catch(console.dir);
